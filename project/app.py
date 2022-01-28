@@ -50,7 +50,6 @@ gmaps = googlemaps.Client(key=api_key)
 # print(d)
 # print(t)
 
-
 class product:
     def __init__(self,id,address, distance, walkingTime, price,size,safety):
         self.id=id
@@ -69,7 +68,9 @@ def search():
     if request.method == 'POST':
         address = request.form['address']
         strtime = request.form['strtime']
-        for x in mycol.find():
+        t=strtime.replace('T',' ')
+        t=datetime.datetime.strptime(t, '%Y-%m-%d %H:%M:%S')
+        for x in mycol.find({'strtime':{'$lte':t},'endtime':{'$gte':t}}):
             try:
                 my_dist = gmaps.distance_matrix(address,x['addr'],mode="walking")['rows'][0]['elements'][0]
             except:
