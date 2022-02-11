@@ -1,0 +1,26 @@
+{% extends 'base.html'%}
+
+{% block head%} 
+    <title>search</title>
+{% endblock%}
+{% block body%} 
+    <form action='/search' method='POST'>
+        <label for="address">地點</label>
+        <input type='text' name='address' id='address' value='{{ad}}' >
+        <label for="strtime">起始時間</label>
+        <input type="datetime-local" name="strtime" value="{{t}}">
+        <input type='submit' class="btn btn-primary" value='search'>
+    </form>
+
+    {% for item in it %}
+        <h3>{{ item.addr }}</h3>
+        <h4>距離/m: {{ item.dist }}</h4>
+        <h4>步行時間/分鐘: {{ item.walking }}</h4>
+        <h4>價格/小時: {{ item.p }}</h4>
+        <h4>行李大小限制: {{ item.s }}</h4>
+        <h4>安全性: {{ item.safe }}</h4>
+        <a  class="btn btn-danger" href='/search/favorites/{{item.id}}'>收藏</a>
+        <a  class="btn btn-primary" href='order/{{item.id}}'>預約</a>
+    {% endfor%}
+
+{% endblock%}

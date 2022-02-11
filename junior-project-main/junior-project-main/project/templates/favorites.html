@@ -1,0 +1,18 @@
+{% extends 'base.html'%}
+
+{% block head%} 
+    <title>search</title>
+{% endblock%}
+{% block body%} 
+    <h1>收藏</h1>
+
+    {% for item in it %}
+        <h3>{{ item.addr }}</h3>
+        <h4>價格/小時: {{ item.p }}</h4>
+        <h4>行李大小限制: {{ item.s }}</h4>
+        <h4>安全性: {{ item.safe }}</h4>
+        <a  class="btn btn-danger" href='/favorites/delete/{{item.id}}'>取消收藏</a>
+        <a  class="btn btn-primary" href='order/{{item.id}}'>預約</a>
+    {% endfor%}
+
+{% endblock%}
