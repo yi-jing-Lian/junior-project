@@ -6,15 +6,16 @@ mydb = myclient["project"]
 mycol = mydb["product"]
 favor=mydb["favorites"]
 userid="abc"
-# mydict = { "addr": "台北市大安區基隆路4段43號", "price": "60", "sellerID": "abcd" ,"size":"大" ,"safety":"有監視器" ,"strtime":datetime.datetime.strptime('2022-10-04 21:01:35', '%Y-%m-%d %H:%M:%S'),"endtime":datetime.datetime.strptime('2022-10-20 21:01:35', '%Y-%m-%d %H:%M:%S')}
+# mydict = {"county":"台北市","district":"大安區","addr": "台北市大安區基隆路4段43號", "price": "60", "sellerID": "abcd" ,"size":"大" ,"safety":"有監視器" ,"strtime":datetime.datetime.strptime('2022-10-04 21:01:35', '%Y-%m-%d %H:%M:%S'),"endtime":datetime.datetime.strptime('2022-10-20 21:01:35', '%Y-%m-%d %H:%M:%S')}
 # mycol.insert_one(mydict)
-# mydict = { "addr": "台北市中正區重慶南路一段122號", "price": "60", "sellerID": "ccc" ,"size":"大" ,"safety":"有監視器" ,"strtime":datetime.datetime.strptime('2022-10-04 21:01:35', '%Y-%m-%d %H:%M:%S'),"endtime":datetime.datetime.strptime('2022-10-20 21:01:35', '%Y-%m-%d %H:%M:%S')}
+# mydict = {"county":"台北市","district":"中正區","addr": "台北市中正區重慶南路一段122號", "price": "60", "sellerID": "ccc" ,"size":"大" ,"safety":"有監視器" ,"strtime":datetime.datetime.strptime('2022-10-04 21:01:35', '%Y-%m-%d %H:%M:%S'),"endtime":datetime.datetime.strptime('2022-10-20 21:01:35', '%Y-%m-%d %H:%M:%S')}
 # mycol.insert_one(mydict)
 
 api_key ='AIzaSyBKDu39T3dK5YYZ3RPD9agDkbNX1HL7C4c'
+
 # source = "台灣大學"
 # dest = "台灣科技大學"
-url ='https://maps.googleapis.com/maps/api/distancematrix/json?'
+# url ='https://maps.googleapis.com/maps/api/distancematrix/json?'
 # payload={}
 # headers = {}
 # r = requests.request("GET",url + 'origins=' + source +
@@ -31,12 +32,11 @@ url ='https://maps.googleapis.com/maps/api/distancematrix/json?'
 
 # print(distance['text'])
 
+    
 
-# importing googlemaps module
-import googlemaps
-  
-# Requires API key
+
 gmaps = googlemaps.Client(key=api_key)
+
   
 # Requires cities name
 # my_dist = gmaps.distance_matrix('台科大','台大',mode="walking")['rows'][0]['elements'][0]
@@ -70,11 +70,24 @@ def search():
         strtime = request.form['strtime']
         t=strtime.replace('T',' ')
         t=datetime.datetime.strptime(t, '%Y-%m-%d %H:%M:%S')
-        for x in mycol.find({'strtime':{'$lte':t},'endtime':{'$gte':t}}):
+        url="https://maps.googleapis.com/maps/api/geocode/json?address="+address+"&language=zh-TW&key=AIzaSyDIncNeY6v-wmro41sKCUo71DXTHgKOfr8"
+        data = requests.get(url).json()
+        results=data['results'][0]['address_components']
+        district=results[3]['long_name']
+        county=results[4]['long_name']
+        # print(district)
+        # print(county)
+        find={'county':county,'district':district,'strtime':{'$lte':t},'endtime':{'$gte':t}}
+        count=mycol.count_documents(find)
+        print(count)
+        if count==0:
+            return "<h3>目前無符合條件的置物地點！</h3>"
+        for x in mycol.find(find):
             try:
                 my_dist = gmaps.distance_matrix(address,x['addr'],mode="walking")['rows'][0]['elements'][0]
             except:
                 return "<h3>該地址不存在！</h3>"
+            print(my_dist)
             d=my_dist['distance']
             d=d['text']
             t=my_dist['duration']

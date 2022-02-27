@@ -15,12 +15,13 @@
     {% for item in it %}
         <h3>{{ item.addr }}</h3>
         <h4>距離/m: {{ item.dist }}</h4>
-        <h4>步行時間/分鐘: {{ item.walking }}</h4>
+        <h4>步行時間/分鐘:大約 {{ item.walking }}  <a  href='https://www.google.com/maps/dir/{{ad}}/{{item.addr}}/' target="_blank">開啟地圖</a></h4>
         <h4>價格/小時: {{ item.p }}</h4>
         <h4>行李大小限制: {{ item.s }}</h4>
         <h4>安全性: {{ item.safe }}</h4>
         <a  class="btn btn-danger" href='/search/favorites/{{item.id}}'>收藏</a>
         <a  class="btn btn-primary" href='order/{{item.id}}'>預約</a>
+        <hr>
     {% endfor%}
 
 {% endblock%}
