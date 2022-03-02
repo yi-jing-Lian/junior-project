@@ -1,0 +1,18 @@
+{% extends 'base.html'%}
+
+{% block head%} 
+    <title>shoppingCart</title>
+{% endblock%}
+{% block body%} 
+    <h1>購物清單</h1>
+
+    {% for item in it %}
+        <h3>{{ item.addr }}</h3>
+        <h4>價格/小時: {{ item.p }}</h4>
+        <h4>行李大小限制: {{ item.s }}</h4>
+        <h4>安全性: {{ item.safe }}</h4>
+        <a  class="btn btn-danger" href='/order/delete/{{item.id}}'>取消預約</a>
+        
+    {% endfor%}
+    <a  class="btn btn-primary" href='/order'>結帳</a>
+{% endblock%}
