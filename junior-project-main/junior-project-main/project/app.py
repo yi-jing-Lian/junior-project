@@ -8,7 +8,7 @@ myclient = pymongo.MongoClient(mongodb_uri)
 # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 
 mydb = myclient["test"]
-mycol = mydb["customer"]
+mycol = mydb["product"]
 
 # post = {"_id" : 90, "name" : "suck"}
 # mycol.insert_one(post) //新增
@@ -16,9 +16,9 @@ mycol = mydb["customer"]
 # x = mycol.find_one()
 # print(x) //查詢第一條
 
-
-shoppingList=mydb["shoppingList"]
 favor=mydb["favor"]
+shoppingList=mydb["shoppingList"]
+successOrderList=mydb["success_order"]
 userid="abc"
 # mydict = { "addr": "台北市大安區基隆路4段43號", "price": "60", "sellerID": "abcd" ,"size":"大" ,"safety":"有監視器" ,"strtime":datetime.datetime.strptime('2022-10-04 21:01:35', '%Y-%m-%d %H:%M:%S'),"endtime":datetime.datetime.strptime('2022-10-20 21:01:35', '%Y-%m-%d %H:%M:%S')}
 # mycol.insert_one(mydict)
@@ -115,7 +115,7 @@ def search():
 @app.route('/search/favorites/<id>')
 def addfavorites(id):
     # query = { "_id": ObjectId(id) }    
-    result=favor.update_one({"product_id":id},{"$setOnInsert":{"user_id":userid,"product_id":id}},True)
+    favor.update_one({"product_id":id},{"$setOnInsert":{"user_id":userid,"product_id":id}},True)
     return redirect('/favorites')
 
 @app.route('/favorites')
@@ -136,7 +136,7 @@ def deletefavor(id):
 
 @app.route('/order/<id>')
 def order(id):
-    result=shoppingList.update_one({"product_id":id},{"$setOnInsert":{"user_id":userid,"product_id":id}},True)  
+    shoppingList.update_one({"product_id":id},{"$setOnInsert":{"user_id":userid,"product_id":id}},True)  
     return redirect('/order')
 
 @app.route('/order')
@@ -148,11 +148,50 @@ def orderList():
         myshoppingList.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety']))
     return render_template("shoppingCart.html", it = myshoppingList)
 
+# @app.route('/order/calculate')
+# def 
+
 @app.route('/order/delete/<id>')
 def deleteOrder(id):
     # print(id)
     shoppingList.delete_one({"product_id":id})
     return redirect('/order')
+
+@app.route('/order/order_success')
+def buyerSuccessList():
+    mysuccessOrderList=[]
+    for s in successOrderList.find():
+        product_id=ObjectId(s['product_id'])
+        x=mycol.find_one({"_id":product_id})
+        mysuccessOrderList.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety']))
+    return render_template("buyerSuccessList.html", it = mysuccessOrderList)
+#--------------------------------------------------------------------------------------------------------------
+#seller---------------------------------------------------------------------------------------------------------
+@app.route('/sale/check_order')
+def checkOrder():
+    mysaleList=[]
+    for s in shoppingList.find():
+        product_id=ObjectId(s['product_id'])
+        x=mycol.find_one({"_id":product_id})
+        if x['sellerID'] == "abcd" :
+            mysaleList.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety']))
+    return render_template("order_to_check.html", it = mysaleList)
+
+@app.route('/sale/success_process')
+def successList():
+    mysuccessOrder=[]
+    for s in successOrderList.find():
+        product_id=ObjectId(s['product_id'])
+        x=mycol.find_one({"_id":product_id})
+        mysuccessOrder.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety']))
+    return render_template("successList.html", it = mysuccessOrder)
+
+@app.route('/sale/success_process/<id>')
+def processOrder(id):
+    successOrderList.update_one({"product_id":id},{"$setOnInsert":{"user_id":userid,"product_id":id}},True)
+    shoppingList.delete_one({"product_id":id})
+    return redirect('/sale/check_order')
+
 
 port = int(os.getenv('PORT', 8080))    
 if __name__ == '__main__' : 

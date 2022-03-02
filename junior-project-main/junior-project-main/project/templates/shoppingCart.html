@@ -5,7 +5,10 @@
 {% endblock%}
 {% block body%} 
     <h1>購物清單</h1>
-
+    <!-- <a  class="btn  btn-primary" href='/order/calculate'>結帳</a> -->
+    <a  class="btn  btn btn-dark" href='/search'>返回搜尋</a>
+    <a  class="btn  btn btn-dark" href='/favorites'>返回我的最愛</a>
+    <a  class="btn  btn btn-primary" href='/order/order_success'>成立訂單列表</a>
     {% for item in it %}
         <h3>{{ item.addr }}</h3>
         <h4>價格/小時: {{ item.p }}</h4>
@@ -14,5 +17,5 @@
         <a  class="btn btn-danger" href='/order/delete/{{item.id}}'>取消預約</a>
         
     {% endfor%}
-    <a  class="btn btn-primary" href='/order'>結帳</a>
+    
 {% endblock%}
