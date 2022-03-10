@@ -1,0 +1,16 @@
+<HTML>
+	<BODY>
+		<title>MySpaces</title>
+		<h1>我的空間</h1>
+			{% for space in it %}
+				<h3>{{space.addr}}</h3>
+				<h4>價格/小時: {{ space.price }}</h4>
+				<h4>行李大小限制: {{ space.size }}</h4>
+				<h4>安全性: {{ space.safety }}</h4>
+				<h4>開始時間: {{ space.strtime }}</h4>
+				<h4>結束時間: {{ space.endtime }}</h4>
+				<a  class="btn btn-primary" href='Edit/{{space._id}}'>編輯</a>
+				<a  class="btn btn-danger" href='/MySpaces/delete/{{space._id}}'>刪除</a>
+     			{% endfor %}
+	</BODY>
+</HTML>
