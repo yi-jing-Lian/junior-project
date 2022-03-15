@@ -1,0 +1,20 @@
+<HTML>
+	<BODY>
+		<title>LaunchInfo</title>
+		<h1>上架您的空間</h1>
+		<form method="post">
+			<p>地址：<input type="text" name="address" required></p>
+			<p>價錢/小時：<input type="number" name="price" required></p>
+			<p>尺寸：<input type="radio" id="sizeChoice1" name="size" value="big">
+				<label for="big">大</label>
+  				<input type="radio" id="sizeChoice2" name="size" value="medium">
+ 				 <label for="medium">中</label>
+  				<input type="radio" id="sizeChoice3" name="size" value="small">
+  				<label for="small">小</label>
+			<p>安全性：<input type="text" name="safety"></p>
+			<p>開始時間：<input type="datetime-local" name="startTime" required></p>
+			<p>結束時間：<input type="datetime-local" name="endTime" required></p>
+			<input type="submit" name="send" value="Send">
+		</form>
+	</BODY>
+</HTML>
