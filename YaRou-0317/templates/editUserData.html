@@ -1,0 +1,41 @@
+
+
+{% extends 'layout.html' %}
+{% block title %} 編輯個人資料 {% endblock %}
+{% block content %}
+<div class="container">
+    <form action="/editUserData" method="POST">
+        <div class="form-group">
+            <label for="exampleInputEmail1">姓名:</label>
+            <label>{{name}}</label>
+            <input class="form-control" type="text" name="name" value={{userData.name}} required>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">信箱:</label>
+            <label>{{email}}</label>
+            <input class="form-control" type="email" name="email" value={{userData.email}} required>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">密碼:</label>
+            <label></label>
+            <input class="form-control" type="password" name="password">
+        </div>
+        <div>
+            <input type="submit" name="edit" value="Edit">
+            <!-- <button class="btn btn-primary">修改</button> -->
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+<!--
+{% for space in it %}
+				<h3>{{space.addr}}</h3>
+				<h4>價格/小時: {{ space.price }}</h4>
+				<h4>行李大小限制: {{ space.size }}</h4>
+				<h4>安全性: {{ space.safety }}</h4>
+				<h4>開始時間: {{ space.strtime }}</h4>
+				<h4>結束時間: {{ space.endtime }}</h4>
+				<a  class="btn btn-primary" href='EditMySpace/{{space._id}}'>編輯</a>
+     			{% endfor %}
+-->
