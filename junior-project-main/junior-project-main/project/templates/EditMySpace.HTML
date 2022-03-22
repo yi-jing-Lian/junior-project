@@ -5,13 +5,19 @@
 		<form method="post">
 			<p>地址：<input type="text" name="address" value={{space.addr}} required></p>
 			<p>價錢/小時：<input type="number" name="price" value={{space.price}} required></p>
-			<p>尺寸：<input type="radio" id="sizeChoice1" name="size" value="big">
+			<p>尺寸：<input type="radio" id="sizeChoice1" name="size" value="big" {%if space.size=='big'%} checked {% endif %}>
 				<label for="big">大</label>
-  				<input type="radio" id="sizeChoice2" name="size" value="medium">
- 				 <label for="medium">中</label>
-  				<input type="radio" id="sizeChoice3" name="size" value="small">
-  				<label for="small">小</label>
-			<p>安全性：<input type="text" name="safety" value={{space.safety}}></p>
+  				<input type="radio" id="sizeChoice2" name="size" value="medium" {%if space.size=='medium'%} checked {% endif %}>
+ 				 <label for="medium">中</label>
+  				<input type="radio" id="sizeChoice3" name="size" value="small" {%if space.size=='small'%} checked {% endif %}>
+  				<label for="small">小</label>
+			<p>安全性：</p>
+				<input type="checkbox" id="securityOption1" name="safety" value="有監視器" {% for i in range(0,3) %} {% if space.safety[i] == '有監視器' %} checked {% endif %} {% endfor %}>
+				<label for="有監視器">有監視器</label>
+				<input type="checkbox" id="securityOption2" name="safety" value="專人保管" {% for i in range(0,3) %} {% if space.safety[i] == '專人保管' %} checked {% endif %} {% endfor %}>
+				<label for="專人保管">專人保管</label>
+				<input type="checkbox" id="securityOption3" name="safety" value="提供可上鎖空間" {% for i in range(0,3) %} {% if space.safety[i] == '提供可上鎖空間' %} checked {% endif %} {% endfor %}>
+				<label for="提供可上鎖空間">提供可上鎖空間</label>
 			<p>開始時間：<input type="datetime-local" name="startTime" value={{space.strtime}} required></p>
 			<p>結束時間：<input type="datetime-local" name="endTime" value={{space.endtime}} required></p>
 			<input type="submit" name="send" value="Send">

@@ -68,9 +68,17 @@ class order_to_seller:
         self.id=id
         self.strT=strTime
         self.endT=endTime
-
+# class product:
+#     def __init__(self,id,address,price,size,safety,strTime,endTime):
+#         self.id=id
+#         self.addr=address
+#         self.p=price
+#         self.si=size
+#         self.sa=safety
+#         self.strT=strTime
+#         self.endT=endTime
 class product:
-    def __init__(self,id,address, distance, walkingTime, price,size,safety):
+    def __init__(self,id,address, distance, walkingTime, price,size,safety,strTime,endTime):
         self.id=id
         self.addr=address
         self.dist=distance
@@ -78,6 +86,8 @@ class product:
         self.p=price
         self.s=size
         self.safe=safety
+        self.strT=strTime
+        self.endT=endTime
 
 # class product:
 #     def __init__(self,id,address,price,size,safety,strTime,endTime):
@@ -118,7 +128,7 @@ def search():
                 hour=t[:(index-1)]
                 t=int(min)+int(hour)*60
             t=int(t)
-            items.append(product(x['_id'],x['addr'],d,t,x['price'],x['size'],x['safety']))
+            items.append(product(x['_id'],x['addr'],d,t,x['price'],x['size'],x['safety'],0,0))
             # items.sort(key=lambda s: s.walking)
         return render_template("search.html", it = items,ad=address,t=strtime)
     else:
@@ -140,9 +150,9 @@ def myfavorites():
         product_id=ObjectId(y['product_id'])
         x=mycol.find_one({"_id":product_id})
         # print(product_id)
-        myfavorites.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety']))
+        myfavorites.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety'],0,0))
     if request.method == 'POST':
-        print("hell")
+        # print("hell")
         if request.values['send']=='Send':
             strTime = request.form['startTime']
             endTime = request.form['endTime']
@@ -173,7 +183,7 @@ def orderList():
     for s in shoppingList.find():
         product_id=ObjectId(s['product_id'])
         x=mycol.find_one({"_id":product_id})
-        myshoppingList.append(product(s['_id'],x['addr'],0,0,x['price'],x['size'],x['safety']))
+        myshoppingList.append(product(s['_id'],x['addr'],0,0,x['price'],x['size'],x['safety'],s['strtime'],s['endtime']))
     return render_template("shoppingCart.html", it = myshoppingList)
 
 # @app.route('/order/calculate')
@@ -191,7 +201,7 @@ def buyerSuccessList():
     for s in successOrderList.find():
         product_id=ObjectId(s['product_id'])
         x=mycol.find_one({"_id":product_id})
-        mysuccessOrderList.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety']))
+        mysuccessOrderList.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety'],s['strtime'],s['endtime']))
     return render_template("buyerSuccessList.html", it = mysuccessOrderList)
 #--------------------------------------------------------------------------------------------------------------
 #seller---------------------------------------------------------------------------------------------------------
@@ -202,7 +212,7 @@ def checkOrder():
         product_id=ObjectId(s['product_id'])
         x=mycol.find_one({"_id":product_id})
         if x['sellerID'] == "abcd" :
-            mysaleList.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety']))
+            mysaleList.append(product(s['_id'],x['addr'],0,0,x['price'],x['size'],x['safety'],s['strtime'],s['endtime']))
     return render_template("order_to_check.html", it = mysaleList)
 
 @app.route('/sale/success_process')
@@ -211,35 +221,30 @@ def successList():
     for s in successOrderList.find():
         product_id=ObjectId(s['product_id'])
         x=mycol.find_one({"_id":product_id})
-        mysuccessOrder.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety']))
+        mysuccessOrder.append(product(x['_id'],x['addr'],0,0,x['price'],x['size'],x['safety'],s['strtime'],s['endtime']))
     return render_template("successList.html", it = mysuccessOrder)
 
 @app.route('/sale/success_process/<id>')
 def processOrder(id):
-    successOrderList.update_one({"product_id":id},{"$setOnInsert":{"user_id":userid,"product_id":id}},True)
-    shoppingList.delete_one({"product_id":id})
+    for s in shoppingList.find():
+        product_id=ObjectId(s['product_id'])
+        # x=mycol.find_one({"_id":product_id})
+        successOrderList.update_one({"product_id":product_id},{"$setOnInsert":{"user_id":userid,"product_id":product_id,"strtime":s['strtime'],"endtime":s['endtime']}},True)
+        shoppingList.delete_one({"_id":ObjectId(id)})
     return redirect('/sale/check_order')
 
 #--------------------------------------------------------------------------------------------------------------
 #new seller---------------------------------------------------------------------------------------------------------
 
 
-
-# Table
-#SampleTable = Database.product
-
-
-
-
-
 @app.route('/LaunchInfo', methods=['GET', 'POST'])
 def LaunchSpaces():
     if request.method == 'POST':
         if request.values['send']=='Send':
-            address = request.form['address']
+            address = request.form['address'].replace(" ", "")
             price = request.form['price']
             size = request.form['size']
-            safety = request.form['safety']
+            safety = request.form.getlist('safety')
             strTime = request.form['startTime']
             endTime = request.form['endTime']
             queryObject = {
@@ -268,38 +273,22 @@ def deleteSpaces(id):
     return redirect('/MySpaces')
 
 @app.route('/EditMySpace/<id>', methods=['GET', 'POST'])
-def editSpaces(id):             #Can't display the checked status of the radio buttons.
-    #sizeIsBig = False
-    #sizeIsMedium = False
-    #sizeIsSmall = False
+def editSpaces(id):
     product_id=ObjectId(id)
     myquery = { "_id": product_id }
     space = mycol.find_one(myquery)
     if request.method == 'POST':
         if request.values['send']=='Send':
-            address = request.form['address']
+            address = request.form['address'].replace(" ", "")
             price = request.form['price']
             size = request.form['size']
-            safety = request.form['safety']
+            safety = request.form.getlist('safety')
             strTime = request.form['startTime']
             endTime = request.form['endTime']
             mycol.update_many(myquery, {"$set" : { "addr" : address, "price" : price, "size" : size, "safety" : safety, "strtime" : strTime, "endtime" : endTime}})
             return "Data updated!"
-        #if request.values['size']=='big':
-            #sizeIsBig = True
-            #sizeIsMedium = False
-            #sizeIsSmall = False
-        #elif request.values['size']=='medium':
-            #sizeIsBig = False
-            #sizeIsMedium = True
-            #sizeIsSmall = False
-        #else:
-            #sizeIsBig = False
-            #sizeIsMedium = False
-            #sizeIsSmall = True
     return render_template("EditMySpace.html", space = space)
-
 
 port = int(os.getenv('PORT', 8080))    
 if __name__ == '__main__' : 
-    app.run(host='0.0.0.0', port=port, debug=true)
+    app.run(host='0.0.0.0', port=port, debug=True)

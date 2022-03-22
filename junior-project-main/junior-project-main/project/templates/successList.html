@@ -11,6 +11,8 @@
         <h4>價格/小時: {{ item.p }}</h4>
         <h4>行李大小限制: {{ item.s }}</h4>
         <h4>安全性: {{ item.safe }}</h4>
+        <h4>存放時間: {{ item.strT }}</h4>
+        <h4>取回時間: {{ item.endT }}</h4>
         <!-- <a  class="btn btn-danger" href='/favorites/delete/{{item.id}}'>不成立</a> -->
         <a  class="btn btn-primary" href='/sale/success_process/{{item.id}}'>訂單詳情</a>
     {% endfor%}
