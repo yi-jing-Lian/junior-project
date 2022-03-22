@@ -1,0 +1,23 @@
+{% extends 'base.html'%}
+
+{% block head%} 
+    <title>search</title>
+{% endblock%}
+{% block body%} 
+    <h1>收藏</h1>
+    <a  class="btn  btn btn-dark" href='/search'>返回搜尋</a>
+    {% for item in it %}
+        <h3>{{ item.addr }}</h3>
+        <h4>價格/小時: {{ item.p }}</h4>
+        <h4>行李大小限制: {{ item.s }}</h4>
+        <h4>安全性: {{ item.safe }}</h4>
+        <form method="post">
+            <p>開始時間：<input type="datetime-local" name="startTime" required></p>
+            <p>結束時間：<input type="datetime-local" name="endTime" required></p>
+            <input type="submit" class="btn btn-primary" name="send" value="Send">
+            <a  class="btn btn-danger" href='/favorites/delete/{{item.id}}'>取消收藏</a>
+        </form> 
+    {% endfor%}
+    
+
+{% endblock%}
