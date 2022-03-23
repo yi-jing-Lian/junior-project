@@ -1,0 +1,22 @@
+
+
+{% extends 'layout.html' %}
+{% block title %} Home {% endblock %}
+{% block content %}
+
+{% if returnValue == 1 %}
+    <div class="alert alert-success" role="alert">
+        資料已更新！ <!-- -->
+    </div>
+{% elif session['id'] %}
+    <div class="alert alert-success" role="alert">
+        歡迎 <span>{{ session['id'] }}</span> 的登入 <!-- -->
+    </div>
+{% else %}
+    <div class="alert alert-warning" role="alert">
+        請先登入謝謝！！
+    </div>
+{% endif %}
+
+{% endblock %}
+
