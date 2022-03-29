@@ -1,0 +1,30 @@
+<HTML>
+	<BODY>
+		<title>LaunchInfo</title>
+		<h1>上架您的空間</h1>
+		<form method="post">
+			<p>地址：<input type="text" name="address" required></p>
+			<p>價錢/小時：<input type="number" name="price" required></p>
+			<p>尺寸：<input type="radio" id="sizeChoice1" name="size" value="big">
+				<label for="big">大</label>
+  				<input type="radio" id="sizeChoice2" name="size" value="medium">
+ 				 <label for="medium">中</label>
+  				<input type="radio" id="sizeChoice3" name="size" value="small">
+  				<label for="small">小</label>
+			<p>安全性：</p>
+				<input type="checkbox" id="securityOption1" name="camera" value="有監視器">
+				<label for="有監視器">有監視器</label>
+				<input type="checkbox" id="securityOption2" name="guard" value="專人保管">
+				<label for="專人保管">專人保管</label>
+				<input type="checkbox" id="securityOption3" name="lockable" value="提供可上鎖空間">
+				<label for="提供可上鎖空間">提供可上鎖空間</label>
+			<p>其他安全性描述：</p>
+				<textarea name="moreSecurityDescription" rows="6" cols="40"></textarea>
+			<p>開始時間：<input type="datetime-local" name="startTime" required></p>
+			<p>結束時間：<input type="datetime-local" name="endTime" required></p>
+			<p>備註：</p>
+				<textarea name="note" rows="6" cols="40"></textarea>
+			<p><input type="submit" name="send" value="Send"></p>
+		</form>
+	</BODY>
+</HTML>
